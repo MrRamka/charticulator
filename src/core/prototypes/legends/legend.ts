@@ -17,6 +17,7 @@ import {
   ObjectClassMetadata,
   TemplateParameters,
 } from "../common";
+import { Expression } from "../../specification";
 
 export interface LegendAttributes extends Specification.AttributeMap {
   x: number;
@@ -31,6 +32,7 @@ export interface LegendProperties extends Specification.AttributeMap {
   fontSize: number;
   textColor: Color;
   markerShape: "rectangle" | "circle" | "triangle";
+  data: Expression;
 }
 
 export interface LegendState extends Specification.ObjectState {
@@ -61,6 +63,7 @@ export abstract class LegendClass extends ChartElementClass {
     dataSource: "columnValues",
     dataExpressions: [],
     markerShape: "circle",
+    data: null,
   };
 
   public attributeNames: string[] = ["x", "y"];
@@ -172,6 +175,24 @@ export abstract class LegendClass extends ChartElementClass {
   ): Controls.Widget[] {
     const widget = [
       manager.sectionHeader(strings.objects.legend.labels),
+      manager.vertical(
+        manager.label("Data"),
+        manager.horizontal(
+          [1, 0],
+          manager.inputExpression({
+            property: "order",
+          }),
+          manager.reorderWidget(
+            {
+              property: "order",
+            },
+            {
+              allowReset: true,
+              items: [],
+            }
+          )
+        )
+      ),
       manager.inputFontFamily(
         { property: "fontFamily" },
         { label: strings.objects.font }
